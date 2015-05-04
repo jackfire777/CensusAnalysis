@@ -1,3 +1,6 @@
+//Author: Jordan Messec
+//Date: 4/22/15
+//Email: jmess4@gmail.com
 package writables;
 
 import java.io.DataInput;

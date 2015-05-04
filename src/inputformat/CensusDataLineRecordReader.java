@@ -1,3 +1,6 @@
+//Author: Jordan Messec
+//Date: 4/22/15
+//Email: jmess4@gmail.com
 package inputformat;
 
 import java.io.IOException;
@@ -62,7 +65,6 @@ class CensusDataLineRecordReader extends
 			} else {
 				return false;
 			}
-
 			if (line == null) {
 				return false;
 			}

@@ -1,3 +1,6 @@
+//Author: Jordan Messec
+//Date: 4/22/15
+//Email: jmess4@gmail.com
 package job;
 
 import java.io.IOException;
@@ -7,17 +10,17 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 
-import writables.CensusAnswers78;
-import writables.CensusAnswers;
+import writables.CensusNationwide;
 import writables.CensusValueWritable;
+import writables.StateByState;
 
 public class CensusReducer extends
-		Reducer<Text, CensusValueWritable, CensusAnswers78, NullWritable> {
+		Reducer<Text, CensusValueWritable, CensusNationwide, NullWritable> {
 
 	private NullWritable nW = NullWritable.get();
 	private CensusValueWritable cvwSum = new CensusValueWritable();
-	private CensusAnswers censusAnswers = new CensusAnswers();
-	private CensusAnswers78 cA78W = new CensusAnswers78();
+	private StateByState stateByState = new StateByState();
+	private CensusNationwide censusNationWide = new CensusNationwide();
 	@SuppressWarnings("rawtypes")
 	private MultipleOutputs mOuts;
 
@@ -42,10 +45,10 @@ public class CensusReducer extends
 			cvwSum.combineValues(rhs);
 		}
 
-		cA78W.setValues(key, cvwSum.getNumPeepsOver85(),
+		censusNationWide.setValues(key, cvwSum.getNumPeepsOver85(),
 				cvwSum.getNumPeepsTotal(), cvwSum.getNumRooms());
 
-		censusAnswers.setValues(key, cvwSum.getNumResidencesRented(),
+		stateByState.setValues(key, cvwSum.getNumResidencesRented(),
 				cvwSum.getNumResidencesOwned(),
 				cvwSum.getNumMaleNeverMarried(), cvwSum.getNumMaleTotal(),
 				cvwSum.getNumFemaleNeverMarried(), cvwSum.getNumFemaleTotal(),
@@ -58,7 +61,7 @@ public class CensusReducer extends
 				cvwSum.getNumFemaleTotalCalc());
 
 		try {
-			mOuts.write("Q1toQ6", censusAnswers, nW);
+			mOuts.write("PerStateValues", stateByState, nW);
 		} catch (IOException e1) {
 			System.err.println(e1.getMessage() + "JMESS mapper mOuts JMESS");
 		} catch (InterruptedException e1) {
@@ -69,8 +72,8 @@ public class CensusReducer extends
 	@Override
 	public void cleanup(Context context) {
 		try {
-			cA78W.findPercentile();
-			context.write(cA78W, nW);
+			censusNationWide.findPercentile();
+			context.write(censusNationWide, nW);
 			mOuts.close();
 		} catch (IOException e) {
 			System.err.println(e.getMessage()

@@ -1,3 +1,6 @@
+//Author: Jordan Messec
+//Date: 4/22/15
+//Email: jmess4@gmail.com
 package job;
 
 import java.io.IOException;
@@ -30,12 +33,12 @@ public class CensusJob {
 
 			job.setNumReduceTasks(1);
 
-			job.setOutputKeyClass(writables.CensusAnswers78.class);
+			job.setOutputKeyClass(writables.CensusNationwide.class);
 			job.setOutputValueClass(NullWritable.class);
 
-			MultipleOutputs.addNamedOutput(job, "Q1toQ6",
+			MultipleOutputs.addNamedOutput(job, "PerStateValues",
 					TextOutputFormat.class,
-					writables.CensusAnswers.class, NullWritable.class);
+					writables.StateByState.class, NullWritable.class);
 
 			FileInputFormat.addInputPath(job, new Path(args[0]));
 			FileOutputFormat.setOutputPath(job, new Path(args[1]));
